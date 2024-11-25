@@ -50,7 +50,7 @@ function formatRootTerm(term: string, isRoot: boolean): string {
 }
 
 function replaceWildcards(term: string): string {
-  return term.replace(/[\*؟]+/g, '?');
+  return term.replace(/[*؟]+/g, '?');
 }
 
 function normalizeTerms(term: string, searchIn: 'tok' | 'root'): string {
