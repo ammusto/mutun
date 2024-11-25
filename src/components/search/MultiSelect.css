@@ -1,0 +1,66 @@
+
+.multi-select-container {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .multi-select-container * {
+    font-size:1rem;
+  }
+  
+  .multiselect-box {
+    flex: 1;
+    float: left;
+    height:283px;
+    border-radius:5px;
+    flex-direction: column;
+  }
+  
+  .multiselect-header {
+    align-items: center;
+    height: 32px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  
+  .multiselect-scrollable {
+    overflow-y: auto;
+    height: 150px;
+    scrollbar-width: thin;
+    border:1px solid #ccc;
+    border-radius: 5px;
+    border-top:0px;
+  }
+  
+  .multiselect-option {
+    display: block;
+    padding: 5px 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+
+  }
+
+  .multiselect-option:hover {
+    background-color: #faf7f5;
+  }
+  
+  .multiselect-checkbox {
+    margin-right: 10px;
+    margin-bottom:0px !important;
+  }
+  
+  .multiselect-filter-container {
+    height: 40px;
+    z-index:1;
+  }
+  
+  .multiselect-filter-container input {
+    height: 40px;
+    border-left:0px;
+    border-right:0px;
+    border-bottom-left-radius:0px;
+    border-bottom-right-radius:0px;
+    width:100%;
+    border:1px solid #ccc;
+  }
+  

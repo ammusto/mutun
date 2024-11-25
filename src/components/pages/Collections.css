@@ -1,0 +1,73 @@
+.collections-table td:nth-child(1),
+.collections-table th:nth-child(1) {
+    width: 40%
+}
+
+.collections-table td:nth-child(2),
+.collections-table th:nth-child(2) {
+    text-align: center;
+    width: 10%
+}
+
+.collections-table td:nth-child(3),
+.collections-table th:nth-child(3) {
+    text-align: center;
+    width: 15%
+}
+
+.collections-table td:nth-child(4),
+.collections-table th:nth-child(4) {
+    text-align: center;
+    width: 25%
+}
+
+.collections-table td {
+    padding: 5px;
+    text-align: center;
+}
+
+.collections-create-table {
+    margin:10px 0px 10px 0px;
+
+}
+
+.collections-actions {
+    text-align: center;
+    margin: 10px;
+}
+.collections-create-table td {
+    padding: 5px;
+}
+
+.collections-create-table th {
+    cursor: pointer;
+}
+
+.collections-create-table td:nth-child(1),
+.collections-create-table th:nth-child(1) {
+    width: 45%;
+    text-align: right;
+}
+
+.collections-create-table td:nth-child(2),
+.collections-create-table th:nth-child(2) {
+    width: 20%
+}
+
+.collections-create-table td:nth-child(3),
+.collections-create-table th:nth-child(3) {
+    text-align: center;
+    width: 10%
+}
+
+.collections-create-table td:nth-child(4),
+.collections-create-table th:nth-child(4) {
+    text-align: center;
+    width: 15%
+}
+
+.collections-create-table td:nth-child(5),
+.collections-create-table th:nth-child(5) {
+    text-align: center;
+    width: 5%
+}

@@ -1,0 +1,15 @@
+
+.loading-gif-parent {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .loading-gif-div {
+  
+    margin: auto;
+    text-align: center;
+  }
+  

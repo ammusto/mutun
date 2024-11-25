@@ -1,0 +1,58 @@
+.search-table {
+    width:100%;
+    text-align: center;
+    
+}
+
+.search-table td, .search-table th {
+    padding:5px
+}
+
+.search-table td:nth-child(6),
+.search-table th:nth-child(6) {
+    padding-right:10px;
+    width:50%;
+    text-align: right;
+    direction: rtl;
+}
+
+.search-table td:nth-child(5),
+.search-table th:nth-child(5) {
+    width:10%;
+}
+
+.search-table td:nth-child(4),
+.search-table th:nth-child(4) {
+    width:10%;
+}
+
+.search-table td:nth-child(3),
+.search-table th:nth-child(3) {
+    width:5%;
+}
+
+.search-table td:nth-child(2),
+.search-table th:nth-child(2) {
+    width:10%;
+}
+
+.search-table td:nth-child(1),
+.search-table th:nth-child(1) {
+    width:10%;
+}
+
+.term-connector {
+    color: #000;
+    font-style: italic;
+    
+  }
+  
+  .term-parenthesis {
+    color: #000;
+    padding: 0 1px;
+    font-weight:bold;
+  }
+  
+  .term-field {
+    color: #666;
+  }

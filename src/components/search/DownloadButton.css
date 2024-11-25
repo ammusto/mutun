@@ -1,0 +1,15 @@
+.download-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .download-format-select {
+    margin-top: 10px;
+  }
+  
+  .download-button {
+    padding: 10px 20px;
+    margin-top: 20px;
+  }

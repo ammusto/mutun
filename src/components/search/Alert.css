@@ -1,0 +1,32 @@
+.search-input-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .custom-alert {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .alert-icon {
+    margin-right: 10px;
+  }
+  
+  .alert-message {
+    flex-grow: 1;
+  }
+  
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  
+  .fade-out {
+    animation: fadeOut 0.5s ease-out 4.5s forwards;
+  }

@@ -1,0 +1,169 @@
+.filter-container {
+    justify-content: center;
+    gap: 10px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.filter-container input[type="text"]::placeholder {
+    font-size: 1rem;
+    text-align: center;
+}
+
+.filter-middle {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .filter-left {
+    width: 30%;
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .filter-right {
+    width: 70%;
+  }
+  
+  .filter-left .filter-container .filter-dropdown {
+    width: 100% !important;
+  }
+  
+  .filter-left .filter-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: flex-start;
+    height: 100%;
+  
+  }
+  
+
+@media (max-width: 768px) {
+
+    .filter-container {
+        flex-wrap: wrap !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+
+    }
+
+    .filter-container .multiselect-box {
+        flex: 1 1 50%;
+        max-width: 45%;
+        box-sizing: border-box;
+    }
+
+    .filter-container .date-slider-container {
+        flex: 1 1 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+}
+
+@media (max-width: 468px) {
+
+    .tab-content {
+        padding: 10px !important;
+    }
+
+}
+
+
+.text-filter-list label {
+    display: flex;
+    padding: 0px 5px 2.5px 0px;
+    max-width: 100%;
+    align-items:start;
+  }
+  
+  .text-filter-list label:hover {
+    cursor: pointer;
+    background-color: #eee;
+  }
+  
+  .text-filter-list {
+    border: 1px solid #ccc;
+    width: 100%;
+    border-radius: 5px;
+    text-align: right;
+    direction: rtl;
+    box-sizing: border-box;
+    position: relative;
+    min-height: 200px;
+    overflow-x: hidden;
+  overflow-y: hidden;
+  }
+  
+  .selected-texts-list {
+    width:100%;
+    height:200px;
+    overflow-y: auto;
+  }
+  
+  .virtual-list {
+    direction: rtl !important;
+  }
+  
+  .virtual-row {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    word-wrap: break-word;
+    line-height: 1.4;
+    cursor: pointer;
+    direction: rtl;
+  }
+  
+  .virtual-row:hover {
+    background-color: #eee;
+  }
+  
+  .virtual-row input[type="checkbox"] {
+    flex-shrink: 0;
+    margin-top:5px;
+  }
+  
+  .virtual-row span {
+    flex: 1;
+  }
+  
+  .no-texts.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+  }
+
+  .filter-header {
+    margin-bottom: 10px;
+  }
+  
+  .filter-actions {
+    align-items: center;
+    margin-top:10px;
+  }
+
+  .y-overflow {
+    overflow-y: auto;
+  }
+  
+  .text-filter-container {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .filter-right .text-filter-list {
+    height: 399px;
+  }
+
+  .main-filter-input {
+    width: 100% !important;
+  }

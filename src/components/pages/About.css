@@ -1,0 +1,62 @@
+.team-members {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .team_mem {
+    flex: 1 0 calc(100% - 20px);
+    max-width: calc(33% - 20px);
+    box-sizing: border-box;
+  
+  }
+  
+  .mem_photo {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+  }
+  
+  .mem_role {
+    text-align: center;
+    color: #333;
+    font-style: italic;
+    margin: 10px 0px;
+  }
+
+  .corpus-stats {
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    list-style-type: none;
+    padding: 0;
+    margin: auto;
+    width:400px;
+  }
+  
+  .corpus-stats li {
+    margin-right: 20px;
+  }
+  
+  .corpus-stats li:last-child {
+    margin-right: 0; 
+  }
+
+  @media (max-width: 768px) {
+    .team_mem {
+      flex: 1 0 calc(100% - 20px);
+      max-width: calc(50% - 20px);
+      box-sizing: border-box;
+    }
+  }
+
+  @media (max-width: 468px) {
+    .team_mem {
+      flex: 1 0 calc(100% - 20px);
+      max-width: calc(80%);
+      box-sizing: border-box;
+      margin:auto;
+    }
+
+  }

@@ -1,0 +1,57 @@
+.reader-button {
+    background-color: transparent !important;
+    padding: 0px;
+    width: auto;
+    font-size: 1rem;
+}
+
+.reader-button:hover {
+    text-decoration: underline;
+    color: black;
+}
+
+.reader-button:disabled {
+    color: #999;
+    font-weight: normal !important;
+
+}
+
+.reader-button:disabled:hover {
+    color: #999 !important;
+    text-decoration: none;
+    font-weight: normal !important;
+}
+
+.reader-content h2 {
+    text-align: center;
+    font-weight: normal;
+    font-size: 2rem;
+}
+
+.page-text {
+    font-size: 1.25rem;
+    direction: rtl;
+}
+
+.reader h1 {
+    text-align: center;
+}
+
+.page-content h1 {
+    font-size: 1.5rem !important;
+    text-align: center;
+}
+
+.page-info {
+    text-align: center;
+}
+
+.reader .page-info {
+    direction: ltr !important;
+}
+
+.reader {
+    direction: rtl;
+    max-width: 1000px;
+    margin: auto;
+}
