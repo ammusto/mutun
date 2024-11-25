@@ -1,3 +1,5 @@
+
+
 .collections-table td:nth-child(1),
 .collections-table th:nth-child(1) {
     width: 40%
@@ -27,7 +29,7 @@
 }
 
 .collections-create-table {
-    margin:10px 0px 10px 0px;
+    margin: 10px 0px 10px 0px;
 
 }
 
@@ -35,6 +37,7 @@
     text-align: center;
     margin: 10px;
 }
+
 .collections-create-table td {
     padding: 5px;
 }
@@ -70,4 +73,35 @@
 .collections-create-table th:nth-child(5) {
     text-align: center;
     width: 5%
+}
+
+@media (max-width: 768px) {
+
+    .collections-create-table td:nth-child(1),
+    .collections-create-table th:nth-child(1) {
+        width: 50%;
+        text-align: right;
+    }
+
+    .collections-create-table td:nth-child(2),
+    .collections-create-table th:nth-child(2) {
+        width: 30%;
+    }
+
+    .collections-create-table td:nth-child(3),
+    .collections-create-table th:nth-child(3) {
+        display: none;
+    }
+
+    .collections-create-table td:nth-child(4),
+    .collections-create-table th:nth-child(4) {
+        display: none;
+
+    }
+
+    .collections-create-table td:nth-child(5),
+    .collections-create-table th:nth-child(5) {
+        text-align: center;
+        width: 20%
+    }
 }

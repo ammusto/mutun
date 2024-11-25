@@ -9,6 +9,7 @@ import SaveCorpusModal from '../modals/SaveCorpusModal';
 import LoadingGif from '../utils/LoadingGif';
 import Pagination from '../utils/Pagination';
 import { Collection, Text } from '../../types';
+import './Collections.css';
 
 const TEXTS_PER_PAGE = 25;
 
@@ -209,7 +210,7 @@ const CollectionCreation: React.FC = () => {
                                 <th onClick={() => handleSort('author_ar')}>Author⇅</th>
                                 <th onClick={() => handleSort('date')}>Death⇅</th>
                                 <th onClick={() => handleSort('tags')}>Tags⇅</th>
-                                <th>Actions</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>

@@ -20,7 +20,6 @@
   }
   
   .filter-left {
-    width: 30%;
     display: flex;
     flex-direction: row;
   }
@@ -39,7 +38,6 @@
     width: 100%;
     justify-content: flex-start;
     height: 100%;
-  
   }
   
 
@@ -63,6 +61,28 @@
         max-width: 100%;
         box-sizing: border-box;
     }
+
+    .filter-middle {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      flex-direction: column;
+  
+    }
+  
+    .filter-left,
+    .filter-right {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .filter-dropdown {
+      flex: 1;
+      position: relative;
+      width: 100%;
+    }
+  
 
 }
 

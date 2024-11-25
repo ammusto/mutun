@@ -141,3 +141,35 @@
 nav .text-button {
   text-decoration: none;
 }
+
+@media (max-width: 468px) {
+  .dropdown-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dropdown-container > *:not(.avatar-button):not(.dropdown-menu) {
+    display: none; /* Hide all other elements except the avatar button and dropdown menu */
+  }
+
+  .avatar-button {
+    display: block; /* Ensure the avatar button is always visible */
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 200px;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .dropdown-menu.open {
+    display: block; /* Show dropdown menu when `isDropdownOpen` is true */
+  }
+}
+

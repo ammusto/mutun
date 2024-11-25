@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useMetadata, useText, useAuthor } from '../contexts/metadataContext';
 import LoadingGif from '../utils/LoadingGif';
 import { Text, Author } from '../../types';
+import './Metadata.css';
 
 interface UseTextExtendedResult {
   text: Text | null;

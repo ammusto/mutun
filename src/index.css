@@ -214,6 +214,10 @@ input[type=text] {
   cursor: pointer;
 }
 
+.hidden {
+display: none !important;
+}
+
 
 @media (max-width: 1200px) {
   .main {
@@ -225,12 +229,19 @@ input[type=text] {
   .main {
     max-width: 800px;
   }
+  .text-content {
+    max-width: 600px;
+    margin: auto;
+  }
 }
 
 @media (max-width: 768px) {
   .main {
     max-width: 100%;
     padding: 0px 20px;
+  }
+  .text-content {
+padding:0px 30px
   }
 }
 

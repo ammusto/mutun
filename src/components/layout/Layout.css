@@ -114,4 +114,74 @@ header {
     text-align: center;
   }
   
+  .hamburger-button {
+    display: none;
+  }
   
+  @media (max-width: 768px) {
+    .nav-container {
+      flex-direction: row;
+      align-items: flex-start;
+
+    }
+  
+    .nav-left,
+    .nav-right {
+      width: 30%;
+    }
+
+    .nav-center {
+      display: none;
+      width:40% !important;
+    }
+  
+    .nav-container.open .nav-center {
+      display: block;
+      text-align: center;
+    }
+  
+    .nav-container.open .nav-center li {
+      display: block;
+      margin: 10px 0;
+    }
+  
+    .hamburger-button {
+      display: block;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  }
+
+  @media (max-width: 468px) {
+    .nav-container {
+      flex-direction: row;
+      align-items: flex-start;
+
+    }
+  
+    .nav-left,
+    .nav-right {
+      width: 20%;
+    }
+
+    .nav-center {
+      display: none;
+      width:60% !important;
+    }
+  
+    .nav-container.open .nav-center {
+      display: block;
+      text-align: center;
+    }
+  
+    .nav-container.open .nav-center li {
+      display: block;
+      margin: 10px 0;
+    }
+  
+    .hamburger-button {
+      display: block;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  }
