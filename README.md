@@ -2,7 +2,7 @@
 
 Web application for searching the mutun meta-corpus, drawing from the pioneering work of the KITAB/OpenITI project and al-Maktaba al-Shamela.
 
-## About the Project
+## About the App
 
 Web app allows for searching tokens and roots of Arabic texts. The app is simply a react front end that utilizes an Opensearch backend for searching. Text data will be uploaded to a Zenodo repository once finalized.
 
