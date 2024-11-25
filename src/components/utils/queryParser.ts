@@ -34,8 +34,6 @@ interface HighlightConfig {
   highlight_query?: any;
 }
 
-
-
 function processRootCharacters(term: string): string {
   const arabicCharsRegex = /[أئؤءيىاو]/g;
   return term.replace(arabicCharsRegex, '#');
@@ -49,6 +47,31 @@ function addPeriodsToRoot(term: string): string {
 function formatRootTerm(term: string, isRoot: boolean): string {
   if (!isRoot) return term;
   return addPeriodsToRoot(term);
+}
+
+function replaceWildcards(term: string): string {
+  return term.replace(/[\*؟]+/g, '?');
+}
+
+function normalizeTerms(term: string, searchIn: 'tok' | 'root'): string {
+  if (searchIn !== 'root') {
+    return term.replace(/[أئؤءيىاو]/g, (match) => {
+      switch (match) {
+        case 'آ':
+        case 'أ':
+        case 'إ':
+        case 'ا':
+          return 'ا';
+        case 'ئ':
+          return 'ي';
+        case 'ؤ':
+          return 'و';
+        default:
+          return match;
+      }
+    });
+  }
+  return term;
 }
 
 export function buildOpenSearchQuery(
@@ -89,7 +112,6 @@ export function buildOpenSearchQuery(
     });
   }
 
- 
   const { searchType, searchFields } = config;
 
   try {
@@ -106,10 +128,10 @@ export function buildOpenSearchQuery(
         }
         break;
 
-        case 'proximity':
-          if (searchFields && 'firstTerm' in searchFields && 'secondTerm' in searchFields && 'slop' in searchFields) {
-            handleProximitySearch(query, searchFields as ProximitySearchConfig);
-          }
+      case 'proximity':
+        if (searchFields && 'firstTerm' in searchFields && 'secondTerm' in searchFields && 'slop' in searchFields) {
+          handleProximitySearch(query, searchFields as ProximitySearchConfig);
+        }
         break;
 
       default:
@@ -149,19 +171,17 @@ function configureHighlight(field: string, query: any, proximity: boolean): High
   return config;
 }
 
-
 function buildTokenQuery(term: string, field: string): any {
-  // Check if it's a phrase with spaces
   const terms = term.split(/\s+/);
-  
-  // If it's a single term (no spaces)
+
   if (terms.length === 1) {
-    const hasWildcard = term.includes('*') || term.includes('?');
+    const hasWildcard = term.includes('*') || term.includes('?') || term.includes('؟');
     if (hasWildcard) {
+      console.log("OK")
       return {
         wildcard: {
           [field]: {
-            value: term,
+            value: replaceWildcards(term),
             case_insensitive: true
           }
         }
@@ -176,21 +196,20 @@ function buildTokenQuery(term: string, field: string): any {
       };
     }
   }
-  
-  // If it's a phrase and any term has wildcards
-  const hasWildcardTerm = terms.some(t => t.includes('*') || t.includes('?'));
+
+  const hasWildcardTerm = terms.some(t => t.includes('*') || t.includes('?') || term.includes('؟'));
   if (hasWildcardTerm) {
     return {
       span_near: {
         clauses: terms.map(term => {
-          const hasWildcard = term.includes('*') || term.includes('?');
+          const hasWildcard = term.includes('*') || term.includes('?') || term.includes('؟');
           if (hasWildcard) {
             return {
               span_multi: {
                 match: {
                   wildcard: {
                     [field]: {
-                      value: term,
+                      value: replaceWildcards(term),
                       case_insensitive: true
                     }
                   }
@@ -210,7 +229,7 @@ function buildTokenQuery(term: string, field: string): any {
       }
     };
   }
-  
+
   return {
     match_phrase: {
       [field]: {
@@ -227,15 +246,12 @@ function handleSimpleSearch(query: OpenSearchQuery, searchField: SearchField): v
 
   if (searchIn === 'tok') {
     const field = getSearchField(definite, proclitic);
-    const tokenQuery = buildTokenQuery(term, field);
+    const normalizedTerm = normalizeTerms(term, searchIn);
+    const tokenQuery = buildTokenQuery(normalizedTerm, field);
     query.highlight.fields[field] = configureHighlight(field, tokenQuery, true);
     query.query.bool.must.push(tokenQuery);
-    console.log(query)
-
   } else {
     const processedTerm = formatRootTerm(term, true);
-    // For root searches, we still use match_phrase since root terms 
-    // are processed differently and don't need span queries
     const rootQuery = {
       match_phrase: {
         'token_roots': {
@@ -245,9 +261,9 @@ function handleSimpleSearch(query: OpenSearchQuery, searchField: SearchField): v
     };
     query.highlight.fields['token_roots'] = configureHighlight('token_roots', rootQuery, true);
     query.query.bool.must.push(rootQuery);
-    console.log(query)
   }
 }
+
 function handleAdvancedSearch(query: OpenSearchQuery, searchFields: SearchField[]): void {
   const andFields = searchFields.filter(field => field.tabType === 'AND');
   const orFields = searchFields.filter(field => field.tabType === 'OR');
@@ -257,7 +273,8 @@ function handleAdvancedSearch(query: OpenSearchQuery, searchFields: SearchField[
 
     if (field.searchIn === 'tok') {
       const searchField = getSearchField(field.definite, field.proclitic);
-      const tokenQuery = buildTokenQuery(field.term, searchField);
+      const normalizedTerm = normalizeTerms(field.term, field.searchIn);
+      const tokenQuery = buildTokenQuery(normalizedTerm, searchField);
       query.highlight.fields[searchField] = configureHighlight(searchField, tokenQuery, false);
       query.query.bool.must.push(tokenQuery);
     } else {
@@ -265,7 +282,7 @@ function handleAdvancedSearch(query: OpenSearchQuery, searchFields: SearchField[
       const rootQuery = {
         wildcard: {
           'token_roots': {
-            value: processedTerm,
+            value: replaceWildcards(processedTerm),
             case_insensitive: true
           }
         }
@@ -289,7 +306,7 @@ function handleAdvancedSearch(query: OpenSearchQuery, searchFields: SearchField[
         const rootQuery = {
           wildcard: {
             'token_roots': {
-              value: processedTerm,
+              value: replaceWildcards(processedTerm),
               case_insensitive: true
             }
           }
@@ -314,7 +331,7 @@ function handleProximitySearch(query: OpenSearchQuery, searchFields: ProximitySe
   const { firstTerm, secondTerm, slop } = searchFields;
   const isFirstRoot = firstTerm.searchIn === 'root';
   const isSecondRoot = secondTerm.searchIn === 'root';
-  
+
   if (isFirstRoot || isSecondRoot) {
     const processedFirstTerm = formatRootTerm(firstTerm.term, isFirstRoot);
     const processedSecondTerm = formatRootTerm(secondTerm.term, isSecondRoot);
@@ -327,7 +344,7 @@ function handleProximitySearch(query: OpenSearchQuery, searchFields: ProximitySe
               match: {
                 wildcard: {
                   'token_roots': {
-                    value: processedFirstTerm,
+                    value: replaceWildcards(processedFirstTerm),
                     case_insensitive: true
                   }
                 }
@@ -339,7 +356,7 @@ function handleProximitySearch(query: OpenSearchQuery, searchFields: ProximitySe
               match: {
                 wildcard: {
                   'token_roots': {
-                    value: processedSecondTerm,
+                    value: replaceWildcards(processedSecondTerm),
                     case_insensitive: true
                   }
                 }
@@ -355,20 +372,20 @@ function handleProximitySearch(query: OpenSearchQuery, searchFields: ProximitySe
     query.query.bool.must.push(rootQuery);
   } else {
     const searchField = getSearchField(firstTerm.definite, firstTerm.proclitic);
-    const firstHasWildcard = firstTerm.term.includes('*') || firstTerm.term.includes('?');
-    const secondHasWildcard = secondTerm.term.includes('*') || secondTerm.term.includes('?');
+    const normalizedFirstTerm = normalizeTerms(firstTerm.term, firstTerm.searchIn);
+    const normalizedSecondTerm = normalizeTerms(secondTerm.term, secondTerm.searchIn);
+    const firstHasWildcard = normalizedFirstTerm.includes('*') || normalizedFirstTerm.includes('?') || normalizedFirstTerm.includes('؟');
+    const secondHasWildcard = normalizedSecondTerm.includes('*') || normalizedSecondTerm.includes('?') || normalizedFirstTerm.includes('؟');
 
-    // Create span clauses based on whether terms contain wildcards
     const spanClauses = [];
-    
-    // Handle first term
+
     if (firstHasWildcard) {
       spanClauses.push({
         span_multi: {
           match: {
             wildcard: {
               [searchField]: {
-                value: firstTerm.term,
+                value: replaceWildcards(normalizedFirstTerm),
                 case_insensitive: true
               }
             }
@@ -378,18 +395,18 @@ function handleProximitySearch(query: OpenSearchQuery, searchFields: ProximitySe
     } else {
       spanClauses.push({
         span_term: {
-          [searchField]: firstTerm.term
+          [searchField]: normalizedFirstTerm
         }
       });
     }
-    
+
     if (secondHasWildcard) {
       spanClauses.push({
         span_multi: {
           match: {
             wildcard: {
               [searchField]: {
-                value: secondTerm.term,
+                value: replaceWildcards(normalizedSecondTerm),
                 case_insensitive: true
               }
             }
@@ -399,7 +416,7 @@ function handleProximitySearch(query: OpenSearchQuery, searchFields: ProximitySe
     } else {
       spanClauses.push({
         span_term: {
-          [searchField]: secondTerm.term
+          [searchField]: normalizedSecondTerm
         }
       });
     }
@@ -411,7 +428,7 @@ function handleProximitySearch(query: OpenSearchQuery, searchFields: ProximitySe
         in_order: false
       }
     };
-    
+
     query.highlight.fields[searchField] = configureHighlight(searchField, spanQuery, true);
     query.query.bool.must.push(spanQuery);
   }
