@@ -1,4 +1,4 @@
-# mutūn Web App
+# Mutūn Web App
 
 Web application for searching the mutun meta-corpus, drawing from the pioneering work of the KITAB/OpenITI project and al-Maktaba al-Shamela.
 
