@@ -12,4 +12,4 @@ The impetus behind this project grew out of frustration with the lack of any use
 
 ## Acknowledgements
 
-Initital funding for this project was won through NYU's Faculty Digital Humanities Seed Grant. I would also like to thank Jeremy Farrell, Giovanni DiRusso, and Muhammed AbuOdeh members of the nuṣūṣ team for their assistance, feedback, and support in conceiving of this project.
+Initital funding for this project was won through NYU's Faculty Digital Humanities Seed Grant. I would also like to thank Jeremy Farrell, Giovanni DiRusso, and Muhammed AbuOdeh, members of the nuṣūṣ team, for their assistance, feedback, and support in conceiving of this project.
