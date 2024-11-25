@@ -1,70 +1,15 @@
-# Getting Started with Create React App
+# Mutun Web App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Web application for searching the mutun meta-corpus, drawing from the pioneering work of the KITAB/OpenITI project and al-Maktaba al-Shamela.
 
-## Available Scripts
+## About the Project
 
-In the project directory, you can run:
+Web app allows for searching tokens and roots of Arabic texts. The app is simply a react front end that utilizes an Opensearch backend for searching. Text data will be uploaded to a Zenodo repository once finalized.
 
-### `npm start`
+## About the Project
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The impetus behind this project grew out of frustration with the lack of any user-friendly way of accessing thousands of digitized texts in the KITAB/OpenITI project collected years ago. The majority of researchers, scholars, and readers don't have the technical knowledge to access let alone read and search these highly encoded texts. Mutūn is an answer to this problem by providing access to thousands of texts, many of which are not available in searchable corpora. Not only can users easily perform basic searches for words or phrases, but they can also save custom collections, past searches, and carry out complex queries that utilize both regular token search and root search.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Acknowledgements
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Initital funding for this project was won through NYU's Faculty Digital Humanities Seed Grant. I would also like to thank Jeremy Farrell, Giovanni DiRusso, and Muhammed AbuOdeh members of the nuṣūṣ team for their assistance, feedback, and support in conceiving of this project.
