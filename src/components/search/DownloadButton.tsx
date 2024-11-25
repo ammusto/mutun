@@ -49,6 +49,7 @@ const DownloadButton: React.FC = () => {
           post_tags: ['</em>'],
         },
       };
+      console.log(modifiedQuery)
   
       const results = await performSearch(modifiedQuery);
       return results.results;

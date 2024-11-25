@@ -30,7 +30,7 @@ const TextPage: React.FC = () => {
     { key: 'ed_tl' as keyof Text, label: 'Edition (Latinized)' },
     { key: 'length' as keyof Text, label: 'Word Length' },
     { key: 'tags' as keyof Text, label: 'Genre' },
-    { key: 'uri' as keyof Text, label: 'File Link' },
+    // { key: 'uri' as keyof Text, label: 'File Link' },
     { key: 'contrib' as keyof Text, label: 'Contributor' },
   ], []);
 
