@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Collection } from '../../types';
+import './Collections.css';
 
 interface CollectionsListProps {
   collections?: Collection[];
@@ -30,6 +31,7 @@ const CollectionsList: FC<CollectionsListProps> = ({
 
   return (
     <div className={`collections-table-container ${className}`}>
+      <h3>Your Saved Collections</h3>
       <table className="collections-table">
         <thead>
           <tr>
