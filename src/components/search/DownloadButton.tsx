@@ -36,7 +36,6 @@ const DownloadButton = () => {
     query.size = Math.min(totalResults, 1000);
 
     const results = await performSearch(query);
-    console.log(query)
     return results.results;
   }, [currentSearchConfig, selectedTexts, totalResults]);
 

@@ -177,7 +177,6 @@ function buildTokenQuery(term: string, field: string): any {
   if (terms.length === 1) {
     const hasWildcard = term.includes('*') || term.includes('?') || term.includes('؟');
     if (hasWildcard) {
-      console.log("OK")
       return {
         wildcard: {
           [field]: {
