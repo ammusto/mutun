@@ -1,18 +1,16 @@
-
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { loadMetadata } from '../utils/metadataLoader';
 import { performSearch } from '../services/searchService';
 import { buildOpenSearchQuery } from '../utils/queryParser';
 import { useUnifiedCollections } from './useUnifiedCollections';
+import { useMetadata } from './metadataContext';
 import type { 
   SearchConfig,
   SearchResult,
   Text,
   TextDetail,
   DateRange,
-  MetadataResponse,
   SearchContextValue
-} from '../../types/';
+} from '../../types';
 
 const SearchContext = createContext<SearchContextValue | undefined>(undefined);
 
@@ -24,56 +22,40 @@ interface SearchProviderProps {
 }
 
 export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
-  // Metadata and Filters
-  const [metadata, setMetadata] = useState<MetadataResponse | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const { metadata, dateRangeCache, isLoading: isMetadataLoading } = useMetadata();
+  
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedTexts, setSelectedTexts] = useState<number[]>([]);
   const [selectedTextDetails, setSelectedTextDetails] = useState<TextDetail[]>([]);
-  const [textFilter, setTextFilter] = useState('');
+  const [textFilter, setTextFilter] = useState<string>('');
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedCollections, setSelectedCollections] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState<DateRange>({ min: 0, max: 2000, current: [0, 2000] });
+  const [dateRange, setDateRange] = useState<DateRange>(dateRangeCache || {
+    min: 0,
+    max: 2000,
+    current: [0, 2000]
+  });
 
-  // Search Results State
   const [displayedResults, setDisplayedResults] = useState<SearchResult[]>([]);
-  const [totalResults, setTotalResults] = useState(0);
+  const [totalResults, setTotalResults] = useState<number>(0);
   const [cachedResults, setCachedResults] = useState<SearchResult[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [lastFetchedPage, setLastFetchedPage] = useState<number>(0);
 
-  // UI State
-  const [isSearching, setIsSearching] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [isChangingPage, setIsChangingPage] = useState(false);
-  const [highlightQuery, setHighlightQuery] = useState('');
-  const [isMetadataLoading, setIsMetadataLoading] = useState(true);
-
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [hasSearched, setHasSearched] = useState<boolean>(false);
+  const [isChangingPage, setIsChangingPage] = useState<boolean>(false);
+  const [highlightQuery, setHighlightQuery] = useState<string>('');
   const [currentSearchConfig, setCurrentSearchConfig] = useState<SearchConfig | null>(null);
 
   const { textMatchesCollections } = useUnifiedCollections(metadata?.collectionOptions);
 
-  // Initialize metadata
   useEffect(() => {
-    const initMetadata = async () => {
-      try {
-        const data = await loadMetadata();
-        setMetadata(data);
-        setDateRange({
-          min: data.dateRange.min,
-          max: data.dateRange.max,
-          current: [data.dateRange.min, data.dateRange.max]
-        });
-      } catch (error) {
-        console.error('Error initializing metadata:', error instanceof Error ? error.message : 'Unknown error');
-      } finally {
-        setIsMetadataLoading(false);
-      }
-    };
+    if (dateRangeCache) {
+      setDateRange(dateRangeCache);
+    }
+  }, [dateRangeCache]);
 
-    initMetadata();
-  }, []);
-
-
-  // Memoized filtered texts
   const filteredTexts = useMemo(() => {
     if (!metadata?.texts) return [];
 
@@ -95,7 +77,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
 
   const totalPages = Math.ceil(totalResults / ITEMS_PER_PAGE);
 
-  // Helper: Fetch batch results
   const fetchResultsBatch = async (
     searchConfig: SearchConfig,
     searchTexts: number[],
@@ -109,7 +90,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
     return performSearch(query);
   };
 
-  // Handle search
   const handleSearch = useCallback(async (searchConfig: SearchConfig, searchTexts: number[], page = 1): Promise<void> => {
     if (!searchConfig) return;
   
@@ -124,7 +104,10 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
       setDisplayedResults(results.results.slice(0, ITEMS_PER_PAGE));
       setTotalResults(results.totalResults);
       setCurrentPage(page);
-    
+  
+      const batchPage = Math.ceil(page / (RESULTS_PER_FETCH / ITEMS_PER_PAGE));
+      setLastFetchedPage(batchPage * (RESULTS_PER_FETCH / ITEMS_PER_PAGE));
+  
       if (searchConfig.searchType === 'simple' && Array.isArray(searchConfig.searchFields)) {
         const firstField = searchConfig.searchFields[0];
         setSearchQuery(firstField?.term || '');
@@ -140,9 +123,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
     }
   }, []);
 
-  
-
-  // Handle page change
   const handlePageChange = useCallback(async (newPage: number): Promise<void> => {
     setIsChangingPage(true);
   
@@ -150,8 +130,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
       const startIndex = (newPage - 1) * ITEMS_PER_PAGE;
       const endIndex = startIndex + ITEMS_PER_PAGE;
   
-      // Only fetch new results if we don't have them cached
-      if (!cachedResults[startIndex] && currentSearchConfig) {  // Add null check here
+      if (!cachedResults[startIndex] && currentSearchConfig) {
         const batchPage = Math.floor(newPage / (RESULTS_PER_FETCH / ITEMS_PER_PAGE));
         const newResults = await fetchResultsBatch(currentSearchConfig, selectedTexts, batchPage);
         
@@ -177,7 +156,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
     }
   }, [currentSearchConfig, selectedTexts, cachedResults]);
 
-  // Reset methods
   const resetSelection = useCallback(() => {
     setSelectedTexts([]);
     setSelectedTextDetails([]);
@@ -198,6 +176,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
     setHasSearched(false);
     setHighlightQuery('');
     setCachedResults([]);
+    setLastFetchedPage(0);
     setCurrentSearchConfig(null);
     setSelectedCollections([]);
   }, [resetSelection]);
@@ -249,8 +228,8 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
     totalResults,
     currentPage,
     isSearching,
-    hasSearched,
     totalPages,
+    hasSearched,
     isChangingPage,
     highlightQuery,
     filteredTexts,
