@@ -40,7 +40,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
   const [totalResults, setTotalResults] = useState<number>(0);
   const [cachedResults, setCachedResults] = useState<SearchResult[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [lastFetchedPage, setLastFetchedPage] = useState<number>(0);
 
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
@@ -106,7 +105,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
       setCurrentPage(page);
   
       const batchPage = Math.ceil(page / (RESULTS_PER_FETCH / ITEMS_PER_PAGE));
-      setLastFetchedPage(batchPage * (RESULTS_PER_FETCH / ITEMS_PER_PAGE));
   
       if (searchConfig.searchType === 'simple' && Array.isArray(searchConfig.searchFields)) {
         const firstField = searchConfig.searchFields[0];
@@ -176,7 +174,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
     setHasSearched(false);
     setHighlightQuery('');
     setCachedResults([]);
-    setLastFetchedPage(0);
     setCurrentSearchConfig(null);
     setSelectedCollections([]);
   }, [resetSelection]);
