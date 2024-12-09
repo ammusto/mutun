@@ -2,26 +2,30 @@ import React, { useMemo, useState } from 'react';
 import ResultPreview from './ResultPreview';
 import Pagination from '../utils/Pagination';
 import { useMetadata } from '../contexts/metadataContext';
+import { useSearch } from '../contexts/SearchContext';
 import { ResultsProps, EnhancedSearchResult, Text } from '../../types';
 import './Results.css';
-
 
 const Results: React.FC<ResultsProps> = React.memo(({
   displayedResults,
   currentPage,
   totalResults,
-  totalPages,
   itemsPerPage,
   onPageChange
 }) => {
   const { metadata } = useMetadata();
+  const { isChangingPage, searchError } = useSearch();
   const [previewLimit, setPreviewLimit] = useState<number>(10);
+
+  const handlePreviewLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPreviewLimit(Number(e.target.value));
+  };
+
 
   const resultsWithMetadata = useMemo((): EnhancedSearchResult[] => {
     if (!metadata?.texts) return displayedResults as EnhancedSearchResult[];
 
     return displayedResults.map(result => {
-      // Create a default Text object for unknown texts
       const defaultText: Text = {
         id: result.text_id,
         title_ar: 'Unknown Title',
@@ -69,9 +73,61 @@ const Results: React.FC<ResultsProps> = React.memo(({
   const startIndex = totalResults > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
   const endIndex = Math.min(currentPage * itemsPerPage, totalResults);
 
-  const handlePreviewLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPreviewLimit(Number(e.target.value));
-  };
+  if (isChangingPage) {
+    return (
+      <div>
+        <div className="results-header">
+          <p>Loading results...</p>
+        </div>
+        <table className='results-table'>
+          <thead>
+            <tr>
+              <th>Page:Volume</th>
+              <th>Preview</th>
+              <th>Text</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colSpan={3}>
+                <div className="center">
+                  <p>Loading next batch of results...</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
+  if (searchError) {
+    return (
+      <div>
+        <div className="results-header">
+          <p>{searchError}</p>
+        </div>
+        <table className='results-table'>
+          <thead>
+            <tr>
+              <th>Page:Volume</th>
+              <th>Preview</th>
+              <th>Text</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colSpan={3}>
+                <div className="center">
+                  <p>Please modify your search and try again.</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -118,7 +174,7 @@ const Results: React.FC<ResultsProps> = React.memo(({
                   </a>
                 </td>
                 <td>
-                  <ResultPreview highlight={result.highlights} previewLimit={previewLimit} />
+                <ResultPreview highlight={result.highlights} previewLimit={previewLimit} />
                 </td>
                 <td>
                   <a

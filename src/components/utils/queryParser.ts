@@ -74,12 +74,73 @@ function normalizeTerms(term: string, searchIn: 'tok' | 'root'): string {
   return term;
 }
 
+export class EmptyQueryError extends Error {
+  constructor(message: string = 'Empty search query') {
+    super(message);
+    this.name = 'EmptyQueryError';
+  }
+}
+
+// Add validation function
+function validateSearchConfig(config: SearchConfig): void {
+  const { searchType, searchFields } = config;
+
+  if (!searchFields) {
+    throw new EmptyQueryError('Invalid search configuration - no search fields provided');
+  }
+
+  function isProximitySearchConfig(
+    searchFields: SearchField[] | ProximitySearchConfig | undefined
+  ): searchFields is ProximitySearchConfig {
+    return (
+      typeof searchFields === 'object' &&
+      searchFields !== null &&
+      'firstTerm' in searchFields &&
+      'secondTerm' in searchFields &&
+      'slop' in searchFields
+    );
+  }
+
+  switch (searchType) {
+    case 'simple': {
+      if (Array.isArray(searchFields) && searchFields[0]) {
+        if (!searchFields[0].term.trim()) {
+          throw new EmptyQueryError('Please enter a search term');
+        }
+      }
+      break;
+    }
+    case 'advanced': {
+      if (Array.isArray(searchFields)) {
+        const hasValidTerm = searchFields.some(field => field.term.trim());
+        if (!hasValidTerm) {
+          throw new EmptyQueryError('Please enter at least one search term');
+        }
+      }
+      break;
+    }
+    case 'proximity': {
+      if (!isProximitySearchConfig(searchFields)) {
+        throw new EmptyQueryError('Invalid proximity search configuration');
+      }
+      if (!searchFields.firstTerm.term.trim() || !searchFields.secondTerm.term.trim()) {
+        throw new EmptyQueryError('Please enter both search terms for proximity search');
+      }
+      break;
+    }
+  }
+}
+
 export function buildOpenSearchQuery(
   config: SearchConfig,
   page: number = 1,
   batchSize: number = 20,
   itemsPerPage: number = 20
 ): OpenSearchQuery {
+  
+  validateSearchConfig(config);
+
+
   // Calculate the starting index based on regular page size
   const startIndex = (page - 1) * itemsPerPage;
 

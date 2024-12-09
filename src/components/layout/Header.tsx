@@ -6,8 +6,8 @@ const Header: React.FC = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const hideHeaderTextRoutes = ['/search', '/collections/create'];
-  const shouldShowHeaderText = !hideHeaderTextRoutes.includes(location.pathname);
+  const showHeaderRoutes = ['/'];
+  const shouldShowHeaderText = showHeaderRoutes.includes(location.pathname);
 
   const toggleMenu = () => {
     setIsMenuOpen((prevState) => !prevState);

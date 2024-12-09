@@ -26,6 +26,7 @@ interface OpenSearchResponse {
 }
 
 export const performSearch = async (query: any): Promise<SearchResponse> => {
+  console.log(query)
   if (query.from >= 10000) {
     throw new Error('Search results limited to first 10,000 results');
   }

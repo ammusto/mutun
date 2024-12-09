@@ -3,7 +3,7 @@ import { performSearch } from '../services/searchService';
 import { buildOpenSearchQuery } from '../utils/queryParser';
 import { useUnifiedCollections } from './useUnifiedCollections';
 import { useMetadata } from './metadataContext';
-import type { 
+import type {
   SearchConfig,
   SearchResult,
   Text,
@@ -23,7 +23,7 @@ interface SearchProviderProps {
 
 export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
   const { metadata, dateRangeCache, isLoading: isMetadataLoading } = useMetadata();
-  
+
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedTexts, setSelectedTexts] = useState<number[]>([]);
   const [selectedTextDetails, setSelectedTextDetails] = useState<TextDetail[]>([]);
@@ -46,6 +46,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
   const [isChangingPage, setIsChangingPage] = useState<boolean>(false);
   const [highlightQuery, setHighlightQuery] = useState<string>('');
   const [currentSearchConfig, setCurrentSearchConfig] = useState<SearchConfig | null>(null);
+  const [searchError, setSearchError] = useState<string | undefined>();
 
   const { textMatchesCollections } = useUnifiedCollections(metadata?.collectionOptions);
 
@@ -79,40 +80,48 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
   const fetchResultsBatch = async (
     searchConfig: SearchConfig,
     searchTexts: number[],
-    startPage: number
+    batchPage: number
   ): Promise<{ results: SearchResult[]; totalResults: number }> => {
+    const batchStartIndex = batchPage * ITEMS_PER_PAGE - ITEMS_PER_PAGE;
+
     const query = buildOpenSearchQuery({
       ...searchConfig,
       selectedTexts: searchTexts
-    }, startPage, RESULTS_PER_FETCH, ITEMS_PER_PAGE);
-  
+    }, batchPage + 1, RESULTS_PER_FETCH, ITEMS_PER_PAGE);
+
+    // Ensure the from parameter is set correctly
+    query.from = batchStartIndex;
+    query.size = RESULTS_PER_FETCH;
+
     return performSearch(query);
   };
 
   const handleSearch = useCallback(async (searchConfig: SearchConfig, searchTexts: number[], page = 1): Promise<void> => {
     if (!searchConfig) return;
-  
+
+    setSearchError(undefined);
     setIsSearching(true);
     setHasSearched(true);
     setCurrentSearchConfig(searchConfig);
-  
+
     try {
       const results = await fetchResultsBatch(searchConfig, searchTexts, page);
-  
+
       setCachedResults(results.results);
       setDisplayedResults(results.results.slice(0, ITEMS_PER_PAGE));
       setTotalResults(results.totalResults);
       setCurrentPage(page);
-  
-      const batchPage = Math.ceil(page / (RESULTS_PER_FETCH / ITEMS_PER_PAGE));
-  
+
       if (searchConfig.searchType === 'simple' && Array.isArray(searchConfig.searchFields)) {
         const firstField = searchConfig.searchFields[0];
         setSearchQuery(firstField?.term || '');
         setHighlightQuery(firstField?.term || '');
       }
     } catch (error) {
-      console.error('Error performing search:', error);
+      if (error) {
+        console.error('Error performing search:', error);
+        setSearchError('An error occurred while performing search');
+      }
       setCachedResults([]);
       setDisplayedResults([]);
       setTotalResults(0);
@@ -123,30 +132,38 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
 
   const handlePageChange = useCallback(async (newPage: number): Promise<void> => {
     setIsChangingPage(true);
-  
+
     try {
       const startIndex = (newPage - 1) * ITEMS_PER_PAGE;
-      const endIndex = startIndex + ITEMS_PER_PAGE;
-  
+
+      // If we don't have the results cached and we need a new batch
       if (!cachedResults[startIndex] && currentSearchConfig) {
-        const batchPage = Math.floor(newPage / (RESULTS_PER_FETCH / ITEMS_PER_PAGE));
+        const batchPage = Math.floor(startIndex / RESULTS_PER_FETCH);
         const newResults = await fetchResultsBatch(currentSearchConfig, selectedTexts, batchPage);
-        
+
+        // Update cache but keep existing results until new ones are ready
         setCachedResults(prev => {
           const updated = [...prev];
           const baseIndex = (batchPage * RESULTS_PER_FETCH);
           newResults.results.forEach((result, i) => {
-            if (baseIndex + i < 10000) {
-              updated.splice(baseIndex + i, 1, result);
+            if (baseIndex + i < 10000) {  // Limit to prevent excessive memory usage
+              updated[baseIndex + i] = result;
             }
           });
           return updated;
         });
       }
-  
-      setDisplayedResults(cachedResults.slice(startIndex, endIndex));
-      setCurrentPage(newPage);
-  
+
+      // Only update displayed results after we have the new batch
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+      const newDisplayedResults = cachedResults.slice(startIndex, endIndex);
+
+      // Only update if we actually have results to show
+      if (newDisplayedResults.length > 0) {
+        setDisplayedResults(newDisplayedResults);
+        setCurrentPage(newPage);
+      }
+
     } catch (error) {
       console.error('Error changing page:', error);
     } finally {
@@ -200,6 +217,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
     isSearching,
     totalPages,
     hasSearched,
+    setHasSearched,
     isChangingPage,
     highlightQuery,
     setHighlightQuery,
@@ -208,6 +226,8 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
     currentSearchConfig,
     ITEMS_PER_PAGE,
     isMetadataLoading,
+    searchError,
+    setSearchError,
     handleSearch,
     handlePageChange,
     resetSearch,
@@ -233,6 +253,8 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
     cachedResults,
     currentSearchConfig,
     isMetadataLoading,
+    searchError,
+    setHasSearched,
     handleSearch,
     handlePageChange,
     resetSearch,

@@ -72,7 +72,7 @@ export interface SelectedText {
 
 export interface SearchField {
   term: string;
-  searchIn: SearchInType;
+  searchIn: 'tok' | 'root';
   definite: boolean;
   proclitic: boolean;
   tabType?: 'AND' | 'OR';
@@ -102,6 +102,10 @@ export interface SearchConfig {
     post_tags?: string[];
   };
   from?: number;
+}
+
+export interface SearchTabProps {
+  onSearch: (config: SearchConfig, selectedTexts: number[]) => void;
 }
 
 
@@ -418,6 +422,9 @@ export interface SearchContextValue {
   highlightQuery: string;
   currentSearchConfig: SearchConfig | null;
   ITEMS_PER_PAGE: number;
+  searchError?: string;
+  setSearchError: (error: string | undefined) => void;
+  setHasSearched: (hasSearched: boolean) => void;
   setSearchQuery: (query: string) => void;
   setSelectedTexts: React.Dispatch<React.SetStateAction<number[]>>;
   setSelectedTextDetails: React.Dispatch<React.SetStateAction<TextDetail[]>>;

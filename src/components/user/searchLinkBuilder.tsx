@@ -22,10 +22,10 @@ export const buildSearchUrl = (query: SearchQuery): string => {
 
   switch (query.type.toLowerCase()) {
     case 'simple':
-      if (query.term) params.set('term', query.term);
-      if (query.search_in) params.set('search_in', query.search_in);
-      if (query.definite !== undefined) params.set('definite', String(query.definite));
-      if (query.proclitic !== undefined) params.set('proclitic', String(query.proclitic));
+      if (query.term) params.set('t', query.term);
+      if (query.search_in) params.set('in', query.search_in);
+      if (query.definite !== undefined) params.set('d', String(query.definite));
+      if (query.proclitic !== undefined) params.set('p', String(query.proclitic));
       break;
 
     case 'advanced': {
@@ -37,8 +37,8 @@ export const buildSearchUrl = (query: SearchQuery): string => {
     }
 
     case 'proximity':
-      if (query.term1) params.set('term1', query.term1);
-      if (query.term2) params.set('term2', query.term2);
+      if (query.term1) params.set('t1', query.term1);
+      if (query.term2) params.set('t2', query.term2);
       if (query.slop !== undefined) params.set('slop', query.slop.toString());
       break;
   }

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useSearch } from '../contexts/SearchContext';
 import FilterTab from './FilterTab';
 import SearchTab from './SearchTab';
@@ -8,30 +8,30 @@ import { SearchFormProps } from '../../types';  // Importing the types from type
 const SearchForm: React.FC<SearchFormProps> = ({
   onSearch,
   onResetSearch,
-  initialQuery = '',
   initialTextIds = [],
 }) => {
   const {
     setSelectedTexts,
     resetSearch,
-    resetSelection
+    resetSelection,
+    hasSearched,
   } = useSearch();
 
   const { resetSearchForm } = useSearchForm();
   const [activeTab, setActiveTab] = useState<'select' | 'search'>('select');
-  const isInitialMount = useRef(true);
+  const [inititalLoad, setInititalLoad] = useState(false)
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      if (initialQuery !== '') {
+    if (hasSearched) {
+      if (!inititalLoad) {
         setActiveTab('search');
       }
       if (initialTextIds.length > 0) {
         setSelectedTexts(initialTextIds);
       }
-      isInitialMount.current = false;
+      setInititalLoad(true)
     }
-  }, [initialQuery, initialTextIds, setSelectedTexts]);
+  }, [hasSearched, inititalLoad, setSelectedTexts, initialTextIds]);
 
   const handleTabChange = useCallback((tab: 'select' | 'search') => {
     setActiveTab(tab);
